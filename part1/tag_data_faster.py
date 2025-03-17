@@ -9,7 +9,7 @@ import spacy
 spark = SparkSession.builder.appName("NER-Spark-Fast").getOrCreate()
 
 print('Loading file...')
-df_spark = spark.read.csv("../liar2/train_sample.csv", header=True, inferSchema=True)
+df_spark = spark.read.csv("../liar2/train.csv", header=True, inferSchema=True)
 
 print('Selecting statement & label columns...')
 df_spark = df_spark.select("statement", "label")
