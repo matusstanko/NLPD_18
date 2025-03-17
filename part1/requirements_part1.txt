@@ -3,3 +3,4 @@ transformers==4.49.0
 torch==2.6.0
 matplotlib==3.9.2
 seaborn==0.13.2
+spacy==3.8.3
