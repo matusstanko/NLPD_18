@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from transformers import pipeline
 import spacy
+import pandas as pd
 
 # --------------------------------------------------------------------------
 # 1. SPARK SESSION & DATA LOADING
