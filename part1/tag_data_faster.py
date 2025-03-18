@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, to_json
+from pyspark.sql.functions import col
 from transformers import pipeline
 import spacy
 import pandas as pd
@@ -35,7 +35,8 @@ df_spark = (
 def process_partition(rows, model_name):
     """
     For a given partition of rows, load the model/pipeline ONCE,
-    then apply it to each row's statement.
+    then apply it to each row's statement (which is row[0]).
+    This function now tolerates extra columns in each row.
     """
     # Load the pipeline (or spaCy model) only once per partition:
     if model_name == "en_core_web_trf":
@@ -69,9 +70,17 @@ def process_partition(rows, model_name):
     # Now iterate the rows in this partition and run NER
     results = []
     for row in rows:
-        statement, label, label_binary = row
+        # statement, label, label_binary are the first 3 columns
+        statement = row[0]
+        label = row[1]
+        label_binary = row[2]
+
+        # Perform NER
         ner_result = ner_function(statement)
-        results.append((statement, label, label_binary, ner_result))
+
+        # Return the entire original row + the new NER column
+        full_row = tuple(row) + (ner_result,)
+        results.append(full_row)
 
     return results
 
@@ -83,7 +92,7 @@ models = {
     #"B_raw_entities": "dbmdz/bert-large-cased-finetuned-conll03-english",
     #"C_raw_entities": "dslim/bert-large-NER",
     #"D_raw_entities": "vinhkhuc/BERTweet-NER",
-    #"E_raw_entities": "flair/ner-english-large",
+   # "E_raw_entities": "flair/ner-english-large",
     # Newly added models:
     #"F_raw_entities": "en_core_web_trf",  # SpaCy
     #"G_raw_entities": "stanford-ner-crf-based",  # Stanford placeholder
@@ -95,13 +104,20 @@ models = {
 # --------------------------------------------------------------------------
 for col_name, model_name in models.items():
     print(f'Processing {col_name} with model={model_name} ...')
-    # We use .mapPartitions() to ensure we only load the model once per partition.
-    df_rdd = df_spark.rdd.mapPartitions(lambda rows: process_partition(rows, model_name))
-    df_spark = df_rdd.toDF(df_spark.columns + [col_name])
+    
+    # Grab the existing columns before adding the new one
+    old_cols = df_spark.columns
+
+    # Map partitions so we load the model only once per partition
+    df_rdd = df_spark.rdd.mapPartitions(
+        lambda rows: process_partition(rows, model_name)
+    )
+
+    # Convert back to DataFrame, appending our new column name
+    df_spark = df_rdd.toDF(old_cols + [col_name])
 
 # --------------------------------------------------------------------------
-# 5. SAVE THE RESULT AS PARQUET (Fixed Serialization Issue)
+# 5. SAVE THE RESULT
 # --------------------------------------------------------------------------
-df_spark = df_spark.withColumn("A_raw_entities", to_json(col("A_raw_entities")))
-df_spark.write.parquet("ner_results.parquet", mode="overwrite")
-print("NER processing completed. Results saved to ner_results.parquet.")
+df_spark.write.csv("ner_results.csv", header=True, mode="overwrite")
+print("NER processing completed. Results saved to ner_results.csv.")
