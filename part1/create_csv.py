@@ -1,12 +1,12 @@
-# 2: Importing libraries
+print('2: Importing libraries')
 import pandas as pd
 from transformers import pipeline
 
-# 3: Loading training data
+print('3: Loading training data')
 df_all_features = pd.read_csv("./liar2/train.csv")
 df = df_all_features[["statement", "label"]]
 
-# 5: Adding binary column (true/false)
+print('5: Adding binary column (true/false)')
 true_labels = [5, 4, 3]
 false_labels = [0, 1, 2]
 def convert_label(label):
