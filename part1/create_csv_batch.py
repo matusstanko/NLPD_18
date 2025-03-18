@@ -17,21 +17,21 @@ def convert_label(label):
 df = df.copy()
 df.loc[:, "label_binary"] = df["label"].apply(convert_label)
 
-# List of models to use (optimized for GPU)
+# List of models to use (CPU only)
 models = [
     ("A_raw_entities", "Jean-Baptiste/roberta-large-ner-english"),
     ("B_raw_entities", "dbmdz/bert-large-cased-finetuned-conll03-english"),
     ("C_raw_entities", "vinai/bertweet-base")
 ]
 
-# Function to apply multiple NER models dynamically
+# Function to process statements using CPU (Parallel Processing)
 def process_statements(model_name, statements):
-    ner_pipeline = pipeline("ner", model=model_name, device=0)  # Use GPU
-    return list(ner_pipeline(statements, batch_size=8))  # Batch processing
+    ner_pipeline = pipeline("ner", model=model_name, device=-1)  # CPU only
+    return list(ner_pipeline(statements, batch_size=8))  # Batch processing on CPU
 
 def apply_ner_models(df, models):
     for column_name, model_name in models:
-        print(f"Processing {column_name} with {model_name} on GPU...")
+        print(f"Processing {column_name} with {model_name} on CPU...")
         with ThreadPoolExecutor() as executor:
             results = list(executor.map(lambda x: process_statements(model_name, x), df["statement"]))
         df[column_name] = results
