@@ -4,7 +4,7 @@ from transformers import pipeline
 from concurrent.futures import ThreadPoolExecutor
 
 print('3: Loading training data')
-df_all_features = pd.read_csv("../liar2/train_sample.csv")
+df_all_features = pd.read_csv("../liar2/train.csv")
 df = df_all_features[["statement", "label"]]
 
 print('5: Adding binary column (true/false)')
@@ -19,9 +19,9 @@ df.loc[:, "label_binary"] = df["label"].apply(convert_label)
 
 # List of models to use (CPU only)
 models = [
-    ("A_raw_entities", "Jean-Baptiste/roberta-large-ner-english"),
-    ("B_raw_entities", "dbmdz/bert-large-cased-finetuned-conll03-english"),
-    ("C_raw_entities", "vinai/bertweet-base")
+   ("A_raw_entities", "Jean-Baptiste/roberta-large-ner-english"),
+   ("B_raw_entities", "dbmdz/bert-large-cased-finetuned-conll03-english"),
+   ("C_raw_entities", "vinai/bertweet-base")
 ]
 
 # Function to process statements using CPU (Parallel Processing)
@@ -39,4 +39,4 @@ def apply_ner_models(df, models):
 
 # Apply all models to the dataframe
 df = apply_ner_models(df, models)
-df.to_csv('output_sample.csv', index=False)
+df.to_csv('output_ABC.csv', index=False)
