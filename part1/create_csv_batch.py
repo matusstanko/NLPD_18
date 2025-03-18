@@ -39,4 +39,4 @@ def apply_ner_models(df, models):
 
 # Apply all models to the dataframe
 df = apply_ner_models(df, models)
-df.to_csv('output.csv', index=False)
+df.to_csv('output_sample.csv', index=False)
