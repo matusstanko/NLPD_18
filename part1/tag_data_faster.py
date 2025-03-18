@@ -1,9 +1,8 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, to_json
 from transformers import pipeline
 import spacy
 import pandas as pd
-from pyspark.sql.functions import col, to_json
 
 # --------------------------------------------------------------------------
 # 1. SPARK SESSION & DATA LOADING
@@ -29,9 +28,6 @@ df_spark = (
     .rdd.map(lambda row: (row.statement, row.label, convert_label(row.label)))
     .toDF(["statement", "label", "label_binary"])
 )
-
-# Optional: Control number of partitions to avoid re-loading each model too many times.
-# Example: df_spark = df_spark.repartition(4)
 
 # --------------------------------------------------------------------------
 # 2. PARTITION-LEVEL PROCESSING FUNCTION
@@ -104,7 +100,8 @@ for col_name, model_name in models.items():
     df_spark = df_rdd.toDF(df_spark.columns + [col_name])
 
 # --------------------------------------------------------------------------
-# 5. SAVE THE RESULT AS PARQUET (Optimized)
+# 5. SAVE THE RESULT AS PARQUET (Fixed Serialization Issue)
 # --------------------------------------------------------------------------
+df_spark = df_spark.withColumn("A_raw_entities", to_json(col("A_raw_entities")))
 df_spark.write.parquet("ner_results.parquet", mode="overwrite")
 print("NER processing completed. Results saved to ner_results.parquet.")
