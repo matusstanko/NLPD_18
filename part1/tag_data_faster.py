@@ -119,5 +119,5 @@ for col_name, model_name in models.items():
 # --------------------------------------------------------------------------
 # 5. SAVE THE RESULT
 # --------------------------------------------------------------------------
-df_spark.write.csv("ner_results.csv", header=True, mode="overwrite")
+df_spark.write.parquet("ner_results.parquet", mode="overwrite")
 print("NER processing completed. Results saved to ner_results.csv.")
