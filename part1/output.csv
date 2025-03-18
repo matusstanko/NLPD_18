@@ -1,2 +1,0 @@
-statement,label,label_binary,A_raw_entities,B_raw_entities
-"90 percent of Americans ""support universal background checks"" for gun purchases.",5,1,"[{'entity': 'MISC', 'score': 0.99866974, 'index': 4, 'word': 'ĠAmericans', 'start': 14, 'end': 23}]","[{'entity': 'I-MISC', 'score': 0.99725264, 'index': 4, 'word': 'Americans', 'start': 14, 'end': 23}]"
