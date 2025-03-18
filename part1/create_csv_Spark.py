@@ -2,9 +2,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, udf, lit, to_json
 from pyspark.sql.types import ArrayType, StructType, StructField, StringType, IntegerType
 from transformers import pipeline
-from functools import lru_cache
 
-# Initialize Spark session with increased memory and optimized core usage
+# Initialize Spark session with more memory
 spark = SparkSession.builder \
     .appName("NER_Pipeline") \
     .config("spark.driver.memory", "16g") \
@@ -15,7 +14,7 @@ spark = SparkSession.builder \
 
 # Load data
 print('Loading training data')
-df_all_features = spark.read.csv("../liar2/train_sample.csv", header=True, inferSchema=True)
+df_all_features = spark.read.csv("./liar2/train.csv", header=True, inferSchema=True)
 df = df_all_features.select("statement", "label")
 
 # Define binary label conversion
@@ -39,18 +38,16 @@ models = [
     ("C_raw_entities", "vinai/bertweet-base")
 ]
 
-# Cache models per executor to optimize loading
-@lru_cache(maxsize=3)
-def load_model(model_name):
-    return pipeline("ner", model=model_name)
-
+# Define a UDF for Named Entity Recognition (Load Model Inside UDF)
 def apply_ner_model(text, model_name):
     if text is None:
         return []
-    ner_pipeline = load_model(model_name)  # Load once per executor
+    
+    # Load the model inside the UDF to avoid serialization issues
+    ner_pipeline = pipeline("ner", model=model_name)
     return ner_pipeline(text)
 
-apply_ner_udf = udf(apply_ner_model, ArrayType(StructType([
+apply_ner_udf = udf(lambda text, model_name: apply_ner_model(text, model_name), ArrayType(StructType([
     StructField("entity", StringType(), True),
     StructField("word", StringType(), True),
     StructField("score", StringType(), True),
