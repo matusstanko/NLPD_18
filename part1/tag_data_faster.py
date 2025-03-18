@@ -10,7 +10,7 @@ import pandas as pd
 spark = SparkSession.builder.appName("NER-Spark-Fast").getOrCreate()
 
 print('Loading file...')
-df_spark = spark.read.csv("../liar2/train.csv", header=True, inferSchema=True)
+df_spark = spark.read.csv("../liar2/train_sample.csv", header=True, inferSchema=True)
 
 print('Selecting statement & label columns...')
 df_spark = df_spark.select("statement", "label")
@@ -82,15 +82,15 @@ def process_partition(rows, model_name):
 # 3. MODEL DICTIONARY
 # --------------------------------------------------------------------------
 models = {
-    "A_raw_entities": "Jean-Baptiste/roberta-large-ner-english",
-    "B_raw_entities": "dbmdz/bert-large-cased-finetuned-conll03-english",
-    "C_raw_entities": "dslim/bert-large-NER",
-    "D_raw_entities": "vinhkhuc/BERTweet-NER",
-    "E_raw_entities": "flair/ner-english-large",
+    "A_raw_entities": "Jean-Baptiste/roberta-large-ner-english"
+    #"B_raw_entities": "dbmdz/bert-large-cased-finetuned-conll03-english",
+    #"C_raw_entities": "dslim/bert-large-NER",
+    #"D_raw_entities": "vinhkhuc/BERTweet-NER",
+    #"E_raw_entities": "flair/ner-english-large",
     # Newly added models:
-    "F_raw_entities": "en_core_web_trf",  # SpaCy
-    "G_raw_entities": "stanford-ner-crf-based",  # Stanford placeholder
-    "H_raw_entities": "xlm-roberta-large-finetuned-conll03-english",  # XLM-R
+    #"F_raw_entities": "en_core_web_trf",  # SpaCy
+    #"G_raw_entities": "stanford-ner-crf-based",  # Stanford placeholder
+    #"H_raw_entities": "xlm-roberta-large-finetuned-conll03-english",  # XLM-R
 }
 
 # --------------------------------------------------------------------------
