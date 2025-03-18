@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, udf, lit
+from pyspark.sql.functions import col, udf, lit, to_json
 from pyspark.sql.types import ArrayType, StructType, StructField, StringType, IntegerType
 from transformers import pipeline
 from functools import lru_cache
@@ -15,7 +15,7 @@ spark = SparkSession.builder \
 
 # Load data
 print('Loading training data')
-df_all_features = spark.read.csv("./liar2/train.csv", header=True, inferSchema=True)
+df_all_features = spark.read.csv("../liar2/train_sample.csv", header=True, inferSchema=True)
 df = df_all_features.select("statement", "label")
 
 # Define binary label conversion
@@ -61,6 +61,10 @@ apply_ner_udf = udf(apply_ner_model, ArrayType(StructType([
 # Apply models dynamically with `F.lit(model_name)`
 for column_name, model_name in models:
     df = df.withColumn(column_name, apply_ner_udf(col("statement"), lit(model_name)))
+
+# **Convert the NER output to JSON strings before writing to CSV**
+for column_name, _ in models:
+    df = df.withColumn(column_name, to_json(col(column_name)))
 
 # Save results as CSV
 df.write.csv('output.csv', header=True, mode="overwrite")
