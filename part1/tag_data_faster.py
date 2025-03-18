@@ -3,6 +3,7 @@ from pyspark.sql.functions import col
 from transformers import pipeline
 import spacy
 import pandas as pd
+from pyspark.sql.functions import col, to_json
 
 # --------------------------------------------------------------------------
 # 1. SPARK SESSION & DATA LOADING
@@ -103,7 +104,7 @@ for col_name, model_name in models.items():
     df_spark = df_rdd.toDF(df_spark.columns + [col_name])
 
 # --------------------------------------------------------------------------
-# 5. SAVE THE RESULT
+# 5. SAVE THE RESULT AS PARQUET (Optimized)
 # --------------------------------------------------------------------------
-df_spark.write.csv("ner_results.csv", header=True, mode="overwrite")
-print("NER processing completed. Results saved to ner_results.csv.")
+df_spark.write.parquet("ner_results.parquet", mode="overwrite")
+print("NER processing completed. Results saved to ner_results.parquet.")
