@@ -4,3 +4,10 @@ torch==2.6.0
 matplotlib==3.9.2
 seaborn==0.13.2
 spacy==3.8.3
+flair
+
+pip install spacy
+pip install spacy-transformers
+python -m spacy download en_core_web_trf  # Transformer-based
+# OR
+python -m spacy download en_core_web_sm   # Smaller, faster alternative
