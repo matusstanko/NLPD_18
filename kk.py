@@ -1,7 +1,8 @@
 import os
 import torch
-from torch.utils.data import DataLoader, TensorDataset
-from transformers import BertForTokenClassification, AdamW, get_scheduler, AutoTokenizer, DataCollatorForTokenClassification
+from torch.utils.data import DataLoader
+from transformers import BertForTokenClassification, AutoTokenizer, DataCollatorForTokenClassification, get_scheduler
+from torch.optim import AdamW
 
 # ✅ Step 1: Load & Preprocess Data
 def load_ner_data(file_path):
@@ -71,14 +72,12 @@ def encode_sample(sample):
     token_ids = token_ids[:MAX_LENGTH] + [tokenizer.pad_token_id] * (MAX_LENGTH - len(token_ids))
     label_ids = label_ids[:MAX_LENGTH] + [tag_to_index["O"]] * (MAX_LENGTH - len(label_ids))
 
-    return token_ids, label_ids
+    return {"input_ids": torch.tensor(token_ids), "labels": torch.tensor(label_ids)}
 
 # Encode dataset
 encoded_dataset = [encode_sample(sample) for sample in ner_dataset]
-X = torch.tensor([sample[0] for sample in encoded_dataset])  
-y = torch.tensor([sample[1] for sample in encoded_dataset])  
 
-print(f"✅ Data encoded. Shape: {X.shape}, {y.shape}")
+print(f"✅ Data encoded. Total sentences: {len(encoded_dataset)}")
 
 # ✅ Step 4: Define Model & Training Setup
 model = BertForTokenClassification.from_pretrained(
@@ -91,12 +90,11 @@ model.to(device)
 
 # ✅ Step 5: Prepare DataLoader
 batch_size = 16
-dataset = TensorDataset(X, y)  
 data_collator = DataCollatorForTokenClassification(tokenizer)
-train_dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=data_collator)
+train_dataloader = DataLoader(encoded_dataset, batch_size=batch_size, shuffle=True, collate_fn=data_collator)
 
 # ✅ Step 6: Define Training Parameters
-optimizer = AdamW(model.parameters(), lr=5e-5)
+optimizer = AdamW(model.parameters(), lr=5e-5, weight_decay=0.01)
 num_epochs = 3  
 num_training_steps = len(train_dataloader) * num_epochs
 lr_scheduler = get_scheduler(
@@ -111,11 +109,11 @@ for epoch in range(num_epochs):
     print(f"🚀 Training Epoch {epoch+1}/{num_epochs}...")
 
     for batch in train_dataloader:
-        batch_X, batch_y = [b.to(device) for b in batch]
+        batch = {k: v.to(device) for k, v in batch.items()}  # Move batch to GPU
 
         optimizer.zero_grad()  
-        outputs = model(batch_X).logits  
-        loss = loss_fn(outputs.view(-1, len(tag_to_index)), batch_y.view(-1))  
+        outputs = model(**batch)  # Forward pass
+        loss = outputs.loss  
 
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
