@@ -86,6 +86,6 @@ print("6) Applying all NER models in batches...")
 df = apply_ner_models_in_batches(df, models, device=device, batch_size=8)
 
 print("7) Saving results to 'output.csv'...")
-df.to_csv('output.csv', index=False)
+df.to_csv('output_ABC.csv', index=False)
 
 print("All done!")
