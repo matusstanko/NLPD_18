@@ -25,7 +25,7 @@ def load_ner_data(file_path):
     return data
 
 
-
+w
 # Load training data
 train_data = load_ner_data("en_ewt-ud-train.iob2")
 
