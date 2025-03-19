@@ -94,7 +94,7 @@ data_collator = DataCollatorForTokenClassification(tokenizer)
 train_dataloader = DataLoader(encoded_dataset, batch_size=batch_size, shuffle=True, collate_fn=data_collator)
 
 # ✅ Step 6: Define Training Parameters
-optimizer = AdamW(model.parameters(), lr=5e-5, weight_decay=0.01)
+optimizer = AdamW(model.parameters(), lr=5e-5, weight_decay=0.01)w
 num_epochs = 3  
 num_training_steps = len(train_dataloader) * num_epochs
 lr_scheduler = get_scheduler(
