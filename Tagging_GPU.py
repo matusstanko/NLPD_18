@@ -14,7 +14,7 @@ print(f"   GPU available = {torch.cuda.is_available()}")
 print(f"   Using device = {device}")
 
 print("3) Loading dataset from CSV...")
-df_all_features = pd.read_csv("./liar2/train.csv")
+df_all_features = pd.read_csv("./liar2/test.csv")
 df = df_all_features[["statement", "label"]].copy()
 print(f"   DataFrame shape = {df.shape}")
 
