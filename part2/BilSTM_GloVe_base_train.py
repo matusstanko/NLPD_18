@@ -25,10 +25,10 @@ with open(glove_path, 'r', encoding='utf8') as f:
 print(f"✅ Loaded {len(glove_embeddings)} GloVe vectors.")
 
 # ✅ Best parameters
-hidden_dim = 64
-dropout = 0.1
-lr = 1e-2
-epochs = 10
+hidden_dim = 128
+dropout = 0.3
+lr = 1e-3
+epochs = 3
 patience = 2
 
 # ✅ Load CSVs

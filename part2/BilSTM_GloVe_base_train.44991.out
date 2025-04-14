@@ -1,0 +1,15 @@
+cn14.hpc.itu.dk
+Activating conda environment...
+Loaded...
+✅ Libraries loaded.
+✅ Loaded 400000 GloVe vectors.
+✅ Train shape: (18369, 5), Valid shape: (2297, 4), Test shape: (2296, 5)
+✅ Vocab size: 23519
+✅ Embedding matrix ready
+✅ Final DataLoaders ready
+🔧 Using device: cpu
+✅ Epoch 1/3 complete.
+✅ Epoch 2/3 complete.
+✅ Epoch 3/3 complete.
+
+🧪 Test Results — Accuracy: 0.6838 | F1: 0.6242 | Precision: 0.6288 | Recall: 0.6197

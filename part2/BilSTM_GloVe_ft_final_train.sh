@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=BilSTM_GloVe_base_train
-#SBATCH --output=BilSTM_GloVe_base_train.%j.out
-#SBATCH --error=BilSTM_GloVe_base_train.%j.err
+#SBATCH --job-name=BilSTM_GloVe_ft_final_train
+#SBATCH --output=BilSTM_GloVe_ft_final_train.%j.out
+#SBATCH --error=BilSTM_GloVe_ft_final_train.%j.err
 
 #SBATCH --partition=scavenge
 ##SBATCH --gres=gpu:a100_40gb:1 
@@ -22,4 +22,4 @@ echo "Activating conda environment..."
 eval "$(conda shell.bash hook)"
 conda activate matus_env
 echo "Loaded..."
-python BilSTM_GloVe_base_train.py
+python BilSTM_GloVe_ft_final_train.py
