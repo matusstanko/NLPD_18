@@ -1,11 +1,14 @@
 print("1) Importing libraries...")
 import torch
 import pandas as pd
+import numpy as np
 from transformers import (
     AutoTokenizer, 
     AutoModelForTokenClassification, 
     pipeline
 )
+
+
 
 print("2) Checking GPU availability...")
 device = 0 if torch.cuda.is_available() else -1
@@ -13,7 +16,7 @@ print(f"   GPU available = {torch.cuda.is_available()}")
 print(f"   Using device = {device}")
 
 print("3) Loading dataset from CSV...")
-df_all_features = pd.read_csv("./liar2/train.csv")
+df_all_features = pd.read_csv("/home/matus/NLPD_18/liar2/valid.csv")
 df = df_all_features[["statement", "label"]].copy()
 print(f"   DataFrame shape = {df.shape}")
 
@@ -34,9 +37,7 @@ print(f"   Example rows:\n{df.head()}")
 
 print("5) Defining NER models to use...")
 models = [
-    ("A_raw_entities", "Jean-Baptiste/roberta-large-ner-english"),
-    ("B_raw_entities", "dbmdz/bert-large-cased-finetuned-conll03-english"),
-    ("C_raw_entities", "vinai/bertweet-base")
+    ("A_raw_entities", "Jean-Baptiste/roberta-large-ner-english")
 ]
 
 def apply_ner_models_in_batches(df, models, device, batch_size=8):
@@ -77,8 +78,21 @@ def apply_ner_models_in_batches(df, models, device, batch_size=8):
         )
 
         # Assign to the DataFrame
-        df[new_column] = all_results
-        print(f"   Done with model: {model_name}. New column: {new_column}")
+        #####
+        # Clean each entity: convert np.float32 scores to float
+        def convert_scores(entities):
+            for ent in entities:
+                if isinstance(ent.get("score", None), torch.Tensor):
+                    ent["score"] = float(ent["score"].item())
+                elif isinstance(ent.get("score", None), (np.float32, float)):
+                    ent["score"] = float(ent["score"])
+            return entities
+
+        # Convert every row of entities
+        cleaned_results = [convert_scores(row) for row in all_results]
+
+        # Assign to the DataFrame
+        df[new_column] = cleaned_results
 
     return df
 
@@ -86,6 +100,6 @@ print("6) Applying all NER models in batches...")
 df = apply_ner_models_in_batches(df, models, device=device, batch_size=8)
 
 print("7) Saving results to 'output.csv'...")
-df.to_csv('output_ABC.csv', index=False)
+df.to_csv('output_valid.csv', index=False)
 
 print("All done!")
