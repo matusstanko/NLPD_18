@@ -1,0 +1,2 @@
+name,epochs,batch_size,accuracy,f1,precision,recall
+spacy_xml_tags,7,16,0.63,0.53,0.58,0.49
