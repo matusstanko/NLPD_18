@@ -1,4 +1,0 @@
-statement,label,label_binary,A_raw_entities,B_raw_entities
-"90 percent of Americans ""support universal background checks"" for gun purchases.",5,1,"[{'entity': 'MISC', 'score': 0.99866974, 'index': 4, 'word': 'ĠAmericans', 'start': 14, 'end': 23}]","[{'word': '90 percent', 'entity': 'PERCENT'}, {'word': 'Americans', 'entity': 'NORP'}]"
-Last year was one of the deadliest years ever for law enforcement officers.,1,0,[],"[{'word': 'Last year', 'entity': 'DATE'}, {'word': 'one', 'entity': 'CARDINAL'}, {'word': 'years', 'entity': 'DATE'}]"
-"Bernie Sanders's plan is ""to raise your taxes to 90 percent.",0,0,"[{'entity': 'PER', 'score': 0.9983652, 'index': 1, 'word': 'ĠBernie', 'start': 0, 'end': 6}, {'entity': 'PER', 'score': 0.9985864, 'index': 2, 'word': 'ĠSanders', 'start': 7, 'end': 14}]","[{'word': ""Bernie Sanders's"", 'entity': 'PERSON'}, {'word': '90 percent', 'entity': 'PERCENT'}]"
