@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=lib-install
-#SBATCH --output=lib-install.%j.out
-#SBATCH --error=lib-install.%j.err
+#SBATCH --job-name=bert_training
+#SBATCH --output=bert_training.%j.out
+#SBATCH --error=bert_training.%j.err
 #SBATCH --partition=scavenge
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks=1
@@ -14,4 +14,4 @@ echo "Activating conda environment..."
 eval "$(conda shell.bash hook)"
 conda activate matus_env
 
-conda install -y pandas scikit-learn transformers tqdm
+python train.py

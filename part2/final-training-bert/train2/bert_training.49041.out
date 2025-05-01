@@ -1,0 +1,16 @@
+Activating conda environment...
+1/6 libraries loaded
+2/6 data loaded
+3/6 XML tags inserted
+4/6 Converted to datasets
+5/6 Training in progress...
+Training bert_xml_tags...
+{'loss': 0.5774, 'grad_norm': 11.157508850097656, 'learning_rate': 1.9999999999999998e-05, 'epoch': 1.0}
+{'eval_loss': 0.551243245601654, 'eval_accuracy': 0.6999128919860628, 'eval_f1': 0.6863905325443787, 'eval_precision': 0.6160130718954249, 'eval_recall': 0.774922918807811, 'eval_runtime': 117.6386, 'eval_samples_per_second': 19.517, 'eval_steps_per_second': 1.224, 'epoch': 1.0}
+{'loss': 0.4637, 'grad_norm': 10.685672760009766, 'learning_rate': 9.999999999999999e-06, 'epoch': 2.0}
+{'eval_loss': 0.581823468208313, 'eval_accuracy': 0.7073170731707317, 'eval_f1': 0.6753623188405797, 'eval_precision': 0.6371923427529627, 'eval_recall': 0.7183967112024666, 'eval_runtime': 116.8345, 'eval_samples_per_second': 19.652, 'eval_steps_per_second': 1.233, 'epoch': 2.0}
+{'loss': 0.2956, 'grad_norm': 9.869750022888184, 'learning_rate': 0.0, 'epoch': 3.0}
+{'eval_loss': 0.742307722568512, 'eval_accuracy': 0.703397212543554, 'eval_f1': 0.6610253857640617, 'eval_precision': 0.640926640926641, 'eval_recall': 0.6824254881808839, 'eval_runtime': 118.5653, 'eval_samples_per_second': 19.365, 'eval_steps_per_second': 1.215, 'epoch': 3.0}
+{'train_runtime': 14369.125, 'train_samples_per_second': 4.315, 'train_steps_per_second': 0.27, 'train_loss': 0.4455687578986673, 'epoch': 3.0}
+Saved plot to bert_xml_tags_curve.png
+6/6 Done — results saved to bert_with_xml_results.csv ✅
