@@ -1,2 +1,2 @@
-name,epochs,batch_size,accuracy,f1,precision,recall
-spacy_xml_tags,7,16,0.63,0.53,0.58,0.49
+accuracy,f1,precision,recall
+66.59407665505228,58.96201177100053,61.49553571428571,56.62898252826311

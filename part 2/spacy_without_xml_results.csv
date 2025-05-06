@@ -1,2 +1,0 @@
-name,epochs,batch_size,accuracy,f1,precision,recall
-spacy_no_xml_tags,7,16,0.67,0.62,0.6,0.63
