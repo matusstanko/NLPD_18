@@ -1,2 +1,0 @@
-name,epochs,batch_size,lr,accuracy,f1,precision,recall,best_f1,final_epoch,best_checkpoint,best_step
-best_model_run,2,32,2e-05,0.6968641114982579,0.6792626728110599,0.6157059314954052,0.7574511819116135,0.6792626728110599,2.0,./results/best_model_run/checkpoint-646,646

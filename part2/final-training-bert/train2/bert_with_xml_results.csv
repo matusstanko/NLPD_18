@@ -1,2 +1,0 @@
-name,epochs,batch_size,lr,accuracy,f1,precision,recall
-bert_xml_tags,3,16,3e-05,0.703397212543554,0.6610253857640617,0.640926640926641,0.6824254881808839

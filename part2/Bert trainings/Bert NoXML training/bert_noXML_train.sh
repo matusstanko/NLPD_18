@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=bert_base
-#SBATCH --output=bert_base.%j.out
-#SBATCH --error=bert_base.%j.err
+#SBATCH --job-name=bert_noXML_train
+#SBATCH --output=bert_noXML_train.%j.out
+#SBATCH --error=bert_noXML_train.%j.err
 #SBATCH --partition=scavenge
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks=1
@@ -15,4 +15,4 @@ echo "Activating conda environment..."
 eval "$(conda shell.bash hook)"
 conda activate matus_env
 
-python base_fixed.py
+python bert_noXML_train.py
