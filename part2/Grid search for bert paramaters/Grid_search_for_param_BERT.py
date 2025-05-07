@@ -24,7 +24,7 @@ for epochs in [10, 15, 20]:
 
 # Safety check for SLURM array overrun
 if config_index >= len(experiment_configs):
-    print(f"⚠️ Config index {config_index} is out of range. Only {len(experiment_configs)} configs available.")
+    print(f" Config index {config_index} is out of range. Only {len(experiment_configs)} configs available.")
     sys.exit(0)
 
 # Load data
@@ -170,5 +170,3 @@ pd.DataFrame([{
     "final_epoch": trainer.state.epoch,
     "best_checkpoint": trainer.state.best_model_checkpoint
 }]).to_csv(f"result_{config['name']}.csv", index=False)
-
-print("✅ Done.")
