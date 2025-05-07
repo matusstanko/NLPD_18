@@ -9,17 +9,28 @@ Finálny (self-contained) skript:
 """
 
 # ========== 0. DEPENDENCIES ==========
-import os, ast, torch, pandas as pd, numpy as np, matplotlib.pyplot as plt
+import os, ast, random, numpy as np, torch, pandas as pd, matplotlib.pyplot as plt
 from tqdm.auto import tqdm
 from sklearn.metrics import (accuracy_score, f1_score, precision_score, recall_score,
                              confusion_matrix, ConfusionMatrixDisplay,
                              roc_curve, auc)
 from transformers import (BertTokenizerFast, BertForSequenceClassification,
-                          Trainer, TrainingArguments)
+                          Trainer, TrainingArguments, set_seed)
+
+# ---------- GLOBAL SEED ----------
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED)                # neškodí ani na CPU
+set_seed(SEED)                                  # HuggingFace helper
+torch.backends.cudnn.deterministic = True       # ak pôjdeš na GPU
+torch.backends.cudnn.benchmark = False
+# -----------------------------------
 
 # ========== 1. BASIC CONFIG ==========
-tqdm.pandas()                       # krajšie progress bary
-os.environ["CUDA_VISIBLE_DEVICES"] = ""   # Force CPU (zmaž, ak chceš GPU)
+tqdm.pandas()
+os.environ["CUDA_VISIBLE_DEVICES"] = ""         # Zmaž, ak chceš GPU
 device = torch.device("cpu")
 
 CFG = dict(
@@ -31,13 +42,15 @@ CFG = dict(
 )
 
 # ========== 2. LOAD DATA ==========
-df_train  = pd.read_csv(f"{CFG['data_dir']}/output_train.csv")
-df_valid  = pd.read_csv(f"{CFG['data_dir']}/output_valid.csv")
-df_test   = pd.read_csv(f"{CFG['data_dir']}/output_test.csv")
+df_train = pd.read_csv(f"{CFG['data_dir']}/output_train.csv")
+df_valid = pd.read_csv(f"{CFG['data_dir']}/output_valid.csv")
+df_test  = pd.read_csv(f"{CFG['data_dir']}/output_test.csv")
 
-# Spojíme train+valid na tréning a valid necháme na evaluáciu počas tréningu
-df_train_full = pd.concat([df_train, df_valid], ignore_index=True)\
-                  .sample(frac=1, random_state=42).reset_index(drop=True)
+df_train_full = (
+    pd.concat([df_train, df_valid], ignore_index=True)
+      .sample(frac=1, random_state=SEED)        # reprodukovateľné premiešanie
+      .reset_index(drop=True)
+)
 
 # ========== 3. INSERT XML TAGS ==========
 def merge_adjacent_entities(entities):
@@ -123,15 +136,16 @@ args = TrainingArguments(
     num_train_epochs  = CFG["epochs"],
     learning_rate     = CFG["lr"],
     weight_decay      = 0.01,
-    fp16              = False,       # CPU-safe
-    report_to         = "none"
+    fp16              = False,      # CPU-safe
+    report_to         = "none",
+    seed              = SEED        # ← seed pre Trainer & DataLoadery
 )
 
 trainer = Trainer(
     model           = model,
     args            = args,
     train_dataset   = ds_train,
-    eval_dataset    = ds_valid,      # validácia počas tréningu
+    eval_dataset    = ds_valid,
     compute_metrics = metrics
 )
 
@@ -142,49 +156,52 @@ eval_test = trainer.evaluate(ds_test)
 
 # ========== 9. LOGS → PLOTS ==========
 logs = pd.DataFrame(trainer.state.log_history)
-# vyber len riadky, kde naozaj máme eval_* metriky
-eval_logs = logs[logs["eval_f1"].notnull()]
 
-plt.style.use("ggplot")  # moderná pred-def. schéma
+plt.style.use("ggplot")
 
-# --- 9a. Loss & F1 ---
-fig, ax1 = plt.subplots(figsize=(7,4))
-ax1.plot(eval_logs["epoch"], eval_logs["eval_loss"], marker="o", label="valid loss")
-ax1.set_xlabel("Epoch")
-ax1.set_ylabel("Loss")
-ax1.tick_params(axis='y')
+# -------- 9a. TRAINING CURVE (štýl SpaCy snippetu) --------
+train_losses = (
+    logs[logs["loss"].notnull()]
+        .groupby("epoch")["loss"].last().tolist()
+)
+val_f1s = (
+    logs[logs["eval_f1"].notnull()]
+        .groupby("epoch")["eval_f1"].last().tolist()
+)
+n_iter = len(train_losses)
 
-ax2 = ax1.twinx()
-ax2.plot(eval_logs["epoch"], eval_logs["eval_f1"], marker="s",
-         linestyle="--", label="valid F1")
-ax2.set_ylabel("F1 score")
-fig.suptitle("Validation Loss & F1")
-
-fig.legend(loc="upper right")
-fig.tight_layout()
+plt.figure()
+plt.plot(range(1, n_iter + 1), train_losses, label="Train loss")
+plt.plot(range(1, n_iter + 1), val_f1s, label="Validation F1")
+plt.xlabel("Epoch")
+plt.title("BERT + XML Training Curve")
+plt.legend()
+plt.tight_layout()
 plt.savefig("training_curve.png")
 plt.close()
 
-# --- 9b. Confusion matrix ---
+# -------- 9b. CONFUSION MATRIX --------
 pred_test = trainer.predict(ds_test).predictions.argmax(-1)
 cm = confusion_matrix(df_test["label_binary"], pred_test)
-ConfusionMatrixDisplay(cm, display_labels=["False","True"]).plot(cmap="Blues",
-                                                                 values_format='d')
-plt.title("Confusion Matrix (test set)")
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["False", "True"])
+disp.plot(cmap="Blues", values_format="d")
+plt.title("Confusion Matrix (BERT + XML)")
 plt.tight_layout()
 plt.savefig("confusion_matrix.png")
 plt.close()
 
-# --- 9c. ROC curve ---
+# -------- 9c. ROC CURVE --------
 probs = trainer.predict(ds_test).predictions[:, 1]
 fpr, tpr, _ = roc_curve(df_test["label_binary"], probs)
-plt.figure(figsize=(5,4))
-plt.plot(fpr, tpr, label=f"AUC = {auc(fpr, tpr):.2f}")
-plt.plot([0,1], [0,1], linestyle="--")
+roc_auc = auc(fpr, tpr)
+
+plt.figure()
+plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
+plt.plot([0, 1], [0, 1], linestyle="--", color="gray")
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
-plt.title("ROC Curve (test set)")
-plt.legend()
+plt.title("ROC Curve (BERT + XML)")
+plt.legend(loc="lower right")
 plt.tight_layout()
 plt.savefig("roc_curve.png")
 plt.close()
@@ -198,4 +215,4 @@ pd.DataFrame([{
     "recall"   : eval_test["eval_recall"]
 }]).to_csv("results_summary.csv", index=False)
 
-print("✅ Hotovo – model, metriky aj grafy („training_curve.png“, „confusion_matrix.png“, „roc_curve.png“) sú uložené.")
+print("✅ Hotovo – model, metriky aj grafy (seed 42) sú uložené.")

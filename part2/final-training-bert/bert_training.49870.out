@@ -1,0 +1,17 @@
+Activating conda environment...
+{'loss': 0.5807, 'grad_norm': 18.86017608642578, 'learning_rate': 2.5714285714285714e-05, 'epoch': 1.0}
+{'eval_loss': 0.4728875160217285, 'eval_accuracy': 0.7570744449281672, 'eval_f1': 0.7502238137869293, 'eval_precision': 0.6640253565768621, 'eval_recall': 0.8621399176954733, 'eval_runtime': 134.4103, 'eval_samples_per_second': 17.089, 'eval_steps_per_second': 1.071, 'epoch': 1.0}
+{'loss': 0.4831, 'grad_norm': 8.785782814025879, 'learning_rate': 2.1428571428571428e-05, 'epoch': 2.0}
+{'eval_loss': 0.3135925233364105, 'eval_accuracy': 0.8837614279494993, 'eval_f1': 0.8662994491737607, 'eval_precision': 0.8439024390243902, 'eval_recall': 0.8899176954732511, 'eval_runtime': 142.981, 'eval_samples_per_second': 16.065, 'eval_steps_per_second': 1.007, 'epoch': 2.0}
+{'loss': 0.3157, 'grad_norm': 8.145999908447266, 'learning_rate': 1.7142857142857142e-05, 'epoch': 3.0}
+{'eval_loss': 0.1804838329553604, 'eval_accuracy': 0.9325206791467131, 'eval_f1': 0.9256594724220624, 'eval_precision': 0.867026055705301, 'eval_recall': 0.992798353909465, 'eval_runtime': 133.6802, 'eval_samples_per_second': 17.183, 'eval_steps_per_second': 1.077, 'epoch': 3.0}
+{'loss': 0.182, 'grad_norm': 2.987591028213501, 'learning_rate': 1.2857142857142857e-05, 'epoch': 4.0}
+{'eval_loss': 0.06426732242107391, 'eval_accuracy': 0.976926425772747, 'eval_f1': 0.973137354282818, 'eval_precision': 0.9590409590409591, 'eval_recall': 0.9876543209876543, 'eval_runtime': 133.6826, 'eval_samples_per_second': 17.182, 'eval_steps_per_second': 1.077, 'epoch': 4.0}
+{'loss': 0.1108, 'grad_norm': 8.9558687210083, 'learning_rate': 8.571428571428571e-06, 'epoch': 5.0}
+{'eval_loss': 0.02688477374613285, 'eval_accuracy': 0.9943404440574662, 'eval_f1': 0.9933024214322514, 'eval_precision': 0.9948400412796697, 'eval_recall': 0.9917695473251029, 'eval_runtime': 133.1506, 'eval_samples_per_second': 17.251, 'eval_steps_per_second': 1.081, 'epoch': 5.0}
+{'loss': 0.0553, 'grad_norm': 0.0464438796043396, 'learning_rate': 4.2857142857142855e-06, 'epoch': 6.0}
+{'eval_loss': 0.01250268705189228, 'eval_accuracy': 0.9969525468001741, 'eval_f1': 0.996401028277635, 'eval_precision': 0.9958890030832477, 'eval_recall': 0.9969135802469136, 'eval_runtime': 133.4494, 'eval_samples_per_second': 17.213, 'eval_steps_per_second': 1.079, 'epoch': 6.0}
+{'loss': 0.0303, 'grad_norm': 0.010684498585760593, 'learning_rate': 0.0, 'epoch': 7.0}
+{'eval_loss': 0.010101784951984882, 'eval_accuracy': 0.9973878972572922, 'eval_f1': 0.9969135802469136, 'eval_precision': 0.9969135802469136, 'eval_recall': 0.9969135802469136, 'eval_runtime': 132.8344, 'eval_samples_per_second': 17.292, 'eval_steps_per_second': 1.084, 'epoch': 7.0}
+{'train_runtime': 39636.9413, 'train_samples_per_second': 3.65, 'train_steps_per_second': 0.228, 'train_loss': 0.2511278997739297, 'epoch': 7.0}
+✅ Hotovo – model, metriky aj grafy („training_curve.png“, „confusion_matrix.png“, „roc_curve.png“) sú uložené.

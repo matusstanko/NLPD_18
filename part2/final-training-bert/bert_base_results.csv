@@ -1,2 +1,0 @@
-name,epochs,batch_size,lr,accuracy,f1,precision,recall,best_f1,final_epoch,best_checkpoint
-bert_base_tags,7,16,3e-05,0.6964285714285714,0.6853273137697516,0.6111111111111112,0.7800616649537513,0.6853273137697516,6.0,./results/bert_base_tags/checkpoint-3876

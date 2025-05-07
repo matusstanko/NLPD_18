@@ -1,0 +1,2 @@
+name,epochs,batch_size,lr,data_dir,accuracy,f1,precision,recall
+bert_plain,7,16,3e-05,/home/matus/NLPD_18/part1/outputs,0.6964285714285714,0.6527154957648231,0.6334622823984526,0.6731757451181911
