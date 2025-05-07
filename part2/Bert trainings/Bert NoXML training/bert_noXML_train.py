@@ -104,14 +104,14 @@ trainer = Trainer(
 trainer.train()
 
 
-# === Evaluation on test set ===
+# Evaluation on test set
 eval_test = trainer.evaluate(ds_test)
 
-# === Plots ===
+# PLOTS
 plt.style.use("ggplot")
 logs = pd.DataFrame(trainer.state.log_history)
 
-# === Training + Validation Curve ===
+# Training,validation curve
 train_losses = (
     logs[logs["loss"].notnull()]
         .groupby("epoch")["loss"].last().tolist()
@@ -122,9 +122,8 @@ val_f1s = (
 )
 n_iter = len(train_losses)
 
-# === Training Loss & Validation F1 (clean style) ===
-plt.style.use("default")  # White background and default color palette
-
+# Training, validation F1 SCORE
+plt.style.use("default") =
 plt.figure()
 plt.plot(range(1, n_iter + 1), train_losses, marker="o", color="tab:blue", label="Train Loss")
 plt.plot(range(1, n_iter + 1), val_f1s, marker="s", linestyle="--", color="tab:orange", label="Val F1")
@@ -136,8 +135,8 @@ plt.tight_layout()
 plt.savefig("bert_noXML_training_validation_curve.png")
 plt.close()
 
-# === Confusion Matrix (clean style) ===
-plt.style.use("default")  # Ensures white background and default fonts
+# Confusion matrix
+plt.style.use("default") 
 
 pred_test = trainer.predict(ds_test).predictions.argmax(-1)
 cm = confusion_matrix(df_test["label_binary"], pred_test)
@@ -147,13 +146,13 @@ fig, ax = plt.subplots()
 disp.plot(cmap="Blues", values_format="d", ax=ax, colorbar=True)
 
 plt.title("Confusion Matrix")
-plt.grid(False)          # No grid
-plt.tight_layout()       # Tight layout
+plt.grid(False)          
+plt.tight_layout()      
 plt.savefig("confusion_matrix_bert_noXML.png")
 plt.close()
 
-# === ROC Curve (custom style to match target image) ===
-plt.style.use("default")  # ⬅ Reset style to default (white background)
+# ROC Cruve
+plt.style.use("default") 
 
 probs = trainer.predict(ds_test).predictions[:, 1]
 fpr, tpr, _ = roc_curve(df_test["label_binary"], probs)
@@ -171,7 +170,7 @@ plt.tight_layout()
 plt.savefig("roc_curve_bert_noXML.png")
 plt.close()
 
-# === Save summary ===
+# Save in csv file
 pd.DataFrame([{
     **CFG,
     "accuracy" : eval_test["eval_accuracy"],
@@ -179,5 +178,3 @@ pd.DataFrame([{
     "precision": eval_test["eval_precision"],
     "recall"   : eval_test["eval_recall"]
 }]).to_csv("results_summary_noXML.csv", index=False)
-
-print("✅ BERT noXML results and plots saved.")

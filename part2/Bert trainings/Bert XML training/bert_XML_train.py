@@ -1,4 +1,4 @@
-# === Imports ===
+# Imports
 from tqdm.auto import tqdm
 tqdm.pandas()
 import os, ast, random, numpy as np, torch, pandas as pd, matplotlib.pyplot as plt
@@ -8,7 +8,7 @@ from sklearn.metrics import (accuracy_score, f1_score, precision_score, recall_s
 from transformers import (BertTokenizerFast, BertForSequenceClassification,
                           Trainer, TrainingArguments, set_seed)
 
-# === Seed Setting ===
+# Seed
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
@@ -18,7 +18,7 @@ set_seed(SEED)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
-# === Config ===
+# Parameters
 CFG = dict(
     name        = "bert_XML",
     epochs      = 7,
@@ -27,7 +27,7 @@ CFG = dict(
     data_dir    = "/home/matus/NLPD_18/part1/outputs"
 )
 
-# === Load Data ===
+# Load data
 df_train = pd.read_csv(f"{CFG['data_dir']}/output_train.csv")
 df_valid = pd.read_csv(f"{CFG['data_dir']}/output_valid.csv")
 df_test  = pd.read_csv(f"{CFG['data_dir']}/output_test.csv")
@@ -38,7 +38,7 @@ df_train_full = (
       .reset_index(drop=True)
 )
 
-# === Insert XML Tags ===
+# Inserting XML tags
 def merge_adjacent_entities(entities):
     if not entities: return []
     entities = sorted(entities, key=lambda x: x["start"])
@@ -72,7 +72,7 @@ for df in (df_train_full, df_valid, df_test):
         lambda r: insert_xml(r["statement"], r["A_raw_entities"]), axis=1
     )
 
-# === Tokenizer ===
+# Tokenize
 tok = BertTokenizerFast.from_pretrained("bert-base-uncased")
 special = ['<per>', '</per>', '<org>', '</org>', '<loc>', '</loc>', '<misc>', '</misc>']
 tok.add_special_tokens({'additional_special_tokens': special})
@@ -83,7 +83,7 @@ enc_train = encode(df_train_full["xml_stmt"].tolist())
 enc_valid = encode(df_valid["xml_stmt"].tolist())
 enc_test  = encode(df_test["xml_stmt"].tolist())
 
-# === Dataset Wrapper ===
+# Dataset create
 class ClsDataset(torch.utils.data.Dataset):
     def __init__(self, enc, labels):
         self.enc = enc
@@ -98,7 +98,7 @@ ds_train = ClsDataset(enc_train, df_train_full["label_binary"].tolist())
 ds_valid = ClsDataset(enc_valid, df_valid["label_binary"].tolist())
 ds_test  = ClsDataset(enc_test , df_test ["label_binary"].tolist())
 
-# === Metrics ===
+# Metrics defining
 def metrics(pred):
     lab, pr = pred.label_ids, pred.predictions.argmax(-1)
     return dict(
@@ -108,7 +108,7 @@ def metrics(pred):
         recall    = recall_score   (lab, pr, zero_division=0)
     )
 
-# === Training Setup ===
+# Training
 model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
 model.resize_token_embeddings(len(tok))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -139,14 +139,14 @@ trainer = Trainer(
 
 trainer.train()
 
-# === Evaluation ===
+# Evaluating on test set
 eval_test = trainer.evaluate(ds_test)
 
-# === Logging ===
+# Save logs
 logs = pd.DataFrame(trainer.state.log_history)
-plt.style.use("default")  # Clean white background, consistent colors
+plt.style.use("default")  
 
-# === Training + Validation Curve ===
+# Training
 train_losses = (
     logs[logs["loss"].notnull()]
         .groupby("epoch")["loss"].last().tolist()
@@ -157,6 +157,7 @@ val_f1s = (
 )
 n_iter = len(train_losses)
 
+# Plots
 plt.figure()
 plt.plot(range(1, n_iter+1), train_losses, marker="o", color="tab:blue", label="Train Loss")
 plt.plot(range(1, n_iter+1), val_f1s,      marker="s", linestyle="--", color="tab:orange", label="Val F1")
@@ -168,7 +169,7 @@ plt.tight_layout()
 plt.savefig("bert_training_validation_curve.png")
 plt.close()
 
-# === Confusion Matrix ===
+# Confusion matrix
 pred_test = trainer.predict(ds_test).predictions.argmax(-1)
 cm = confusion_matrix(df_test["label_binary"], pred_test)
 disp = ConfusionMatrixDisplay(cm, display_labels=["0", "1"])
@@ -180,7 +181,7 @@ plt.tight_layout()
 plt.savefig("confusion_matrix_bert.png")
 plt.close()
 
-# === ROC Curve ===
+# ROC Curve
 probs = trainer.predict(ds_test).predictions[:, 1]
 fpr, tpr, _ = roc_curve(df_test["label_binary"], probs)
 roc_auc = auc(fpr, tpr)
@@ -197,7 +198,7 @@ plt.tight_layout()
 plt.savefig("roc_curve_bert.png")
 plt.close()
 
-# === Save Summary ===
+# Saving file
 pd.DataFrame([{
     **CFG,
     "accuracy" : eval_test["eval_accuracy"],
@@ -205,5 +206,3 @@ pd.DataFrame([{
     "precision": eval_test["eval_precision"],
     "recall"   : eval_test["eval_recall"]
 }]).to_csv("results_summary.csv", index=False)
-
-print("✅ BERT + XML results and plots saved.")
