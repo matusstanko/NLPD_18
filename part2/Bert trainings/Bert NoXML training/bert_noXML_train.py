@@ -75,6 +75,7 @@ def metrics(pred):
 
 # Training
 model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 args = TrainingArguments(
@@ -102,14 +103,15 @@ trainer = Trainer(
 
 trainer.train()
 
-# Evaluation on test set
+
+# === Evaluation on test set ===
 eval_test = trainer.evaluate(ds_test)
 
-# Plots
+# === Plots ===
 plt.style.use("ggplot")
 logs = pd.DataFrame(trainer.state.log_history)
 
-# 1
+# === Training + Validation Curve ===
 train_losses = (
     logs[logs["loss"].notnull()]
         .groupby("epoch")["loss"].last().tolist()
@@ -120,47 +122,62 @@ val_f1s = (
 )
 n_iter = len(train_losses)
 
+# === Training Loss & Validation F1 (clean style) ===
+plt.style.use("default")  # White background and default color palette
+
 plt.figure()
-plt.plot(range(1, n_iter + 1), train_losses, label="Train loss")
-plt.plot(range(1, n_iter + 1), val_f1s, label="Validation F1")
+plt.plot(range(1, n_iter + 1), train_losses, marker="o", color="tab:blue", label="Train Loss")
+plt.plot(range(1, n_iter + 1), val_f1s, marker="s", linestyle="--", color="tab:orange", label="Val F1")
 plt.xlabel("Epoch")
-plt.title("BERT-base Training Curve")
+plt.title("Training Loss & Validation F1")
 plt.legend()
+plt.grid(False)
 plt.tight_layout()
-plt.savefig("training_curve.png")
+plt.savefig("bert_noXML_training_validation_curve.png")
 plt.close()
 
-# Confusion matrix
+# === Confusion Matrix (clean style) ===
+plt.style.use("default")  # Ensures white background and default fonts
+
 pred_test = trainer.predict(ds_test).predictions.argmax(-1)
 cm = confusion_matrix(df_test["label_binary"], pred_test)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["False", "True"])
-disp.plot(cmap="Blues", values_format="d")
-plt.title("Confusion Matrix (BERT-base)")
-plt.tight_layout()
-plt.savefig("confusion_matrix.png")
+disp = ConfusionMatrixDisplay(cm, display_labels=["0", "1"])
+
+fig, ax = plt.subplots()
+disp.plot(cmap="Blues", values_format="d", ax=ax, colorbar=True)
+
+plt.title("Confusion Matrix")
+plt.grid(False)          # No grid
+plt.tight_layout()       # Tight layout
+plt.savefig("confusion_matrix_bert_noXML.png")
 plt.close()
 
-# Roc Curve
+# === ROC Curve (custom style to match target image) ===
+plt.style.use("default")  # ⬅ Reset style to default (white background)
+
 probs = trainer.predict(ds_test).predictions[:, 1]
 fpr, tpr, _ = roc_curve(df_test["label_binary"], probs)
 roc_auc = auc(fpr, tpr)
 
 plt.figure()
-plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
-plt.plot([0, 1], [0, 1], linestyle="--", color="gray")
+plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}", color="tab:blue")
+plt.plot([0, 1], [0, 1], linestyle="--", color="tab:orange")
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
-plt.title("ROC Curve (BERT-base)")
+plt.title("ROC Curve")
 plt.legend(loc="lower right")
+plt.grid(False)
 plt.tight_layout()
-plt.savefig("roc_curve.png")
+plt.savefig("roc_curve_bert_noXML.png")
 plt.close()
 
-# Saving file
+# === Save summary ===
 pd.DataFrame([{
     **CFG,
     "accuracy" : eval_test["eval_accuracy"],
     "f1"       : eval_test["eval_f1"],
     "precision": eval_test["eval_precision"],
     "recall"   : eval_test["eval_recall"]
-}]).to_csv("results_summary.csv", index=False)
+}]).to_csv("results_summary_noXML.csv", index=False)
+
+print("✅ BERT noXML results and plots saved.")
