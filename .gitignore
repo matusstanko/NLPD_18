@@ -1,4 +1,2 @@
-results/
-mlruns/
-logs/
-epoch/
+part2/glove_data/
+*.ipynb_checkpoints
