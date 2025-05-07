@@ -1,0 +1,2 @@
+name,epochs,batch_size,lr,accuracy,f1,precision,recall,best_f1,final_epoch,best_checkpoint
+exp_4,10,4,4e-05,0.6491075315629081,0.619452313503305,0.5724258289703316,0.6748971193415638,0.619452313503305,10.0,./results/exp_4/checkpoint-22965
