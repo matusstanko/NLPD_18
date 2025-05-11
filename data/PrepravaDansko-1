@@ -1,0 +1,4 @@
+<script>start("/Users/matusstanko/Desktop/PrepravaDansko/");</script>
+<script>onHasParentDirectory();</script>
+<script>addRow("mercur","mercur",1,448,"448 B",1746661403,"5/8/25, 1:43:23 AM");</script>
+<script>addRow(".DS_Store",".DS_Store",0,6148,"6.0 kB",1746661534,"5/8/25, 1:45:34 AM");</script>
