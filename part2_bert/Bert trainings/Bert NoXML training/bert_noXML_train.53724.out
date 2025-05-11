@@ -1,0 +1,16 @@
+Activating conda environment...
+{'loss': 0.5758, 'grad_norm': 12.429183006286621, 'learning_rate': 2.5714285714285714e-05, 'epoch': 1.0}
+{'eval_loss': 0.463013231754303, 'eval_accuracy': 0.7757945145842403, 'eval_f1': 0.7565011820330969, 'eval_precision': 0.6999125109361329, 'eval_recall': 0.823045267489712, 'eval_runtime': 7.9065, 'eval_samples_per_second': 290.521, 'eval_steps_per_second': 18.213, 'epoch': 1.0}
+{'loss': 0.4653, 'grad_norm': 5.903229236602783, 'learning_rate': 2.1428571428571428e-05, 'epoch': 2.0}
+{'eval_loss': 0.2877558767795563, 'eval_accuracy': 0.8959512407488028, 'eval_f1': 0.880080280983442, 'eval_precision': 0.8589618021547503, 'eval_recall': 0.9022633744855967, 'eval_runtime': 7.8593, 'eval_samples_per_second': 292.264, 'eval_steps_per_second': 18.322, 'epoch': 2.0}
+{'loss': 0.2866, 'grad_norm': 9.954870223999023, 'learning_rate': 1.7142857142857142e-05, 'epoch': 3.0}
+{'eval_loss': 0.13765370845794678, 'eval_accuracy': 0.9603831084022638, 'eval_f1': 0.9545227386306847, 'eval_precision': 0.9280855199222546, 'eval_recall': 0.9825102880658436, 'eval_runtime': 7.9118, 'eval_samples_per_second': 290.324, 'eval_steps_per_second': 18.201, 'epoch': 3.0}
+{'loss': 0.1682, 'grad_norm': 2.287349224090576, 'learning_rate': 1.2857142857142857e-05, 'epoch': 4.0}
+{'eval_loss': 0.05403682217001915, 'eval_accuracy': 0.9851980844579887, 'eval_f1': 0.9826530612244898, 'eval_precision': 0.9746963562753036, 'eval_recall': 0.9907407407407407, 'eval_runtime': 8.0138, 'eval_samples_per_second': 286.629, 'eval_steps_per_second': 17.969, 'epoch': 4.0}
+{'loss': 0.0966, 'grad_norm': 36.739776611328125, 'learning_rate': 8.571428571428571e-06, 'epoch': 5.0}
+{'eval_loss': 0.028058823198080063, 'eval_accuracy': 0.9939050936003483, 'eval_f1': 0.9928131416837782, 'eval_precision': 0.9907786885245902, 'eval_recall': 0.9948559670781894, 'eval_runtime': 7.9066, 'eval_samples_per_second': 290.515, 'eval_steps_per_second': 18.213, 'epoch': 5.0}
+{'loss': 0.0524, 'grad_norm': 0.023290174081921577, 'learning_rate': 4.2857142857142855e-06, 'epoch': 6.0}
+{'eval_loss': 0.01831883005797863, 'eval_accuracy': 0.9965171963430561, 'eval_f1': 0.995880535530381, 'eval_precision': 0.9969072164948454, 'eval_recall': 0.9948559670781894, 'eval_runtime': 7.9068, 'eval_samples_per_second': 290.508, 'eval_steps_per_second': 18.212, 'epoch': 6.0}
+{'loss': 0.0289, 'grad_norm': 0.018442349508404732, 'learning_rate': 0.0, 'epoch': 7.0}
+{'eval_loss': 0.009820961393415928, 'eval_accuracy': 0.9982585981715281, 'eval_f1': 0.9979402677651905, 'eval_precision': 0.9989690721649485, 'eval_recall': 0.9969135802469136, 'eval_runtime': 7.9502, 'eval_samples_per_second': 288.924, 'eval_steps_per_second': 18.113, 'epoch': 7.0}
+{'train_runtime': 1916.7292, 'train_samples_per_second': 75.473, 'train_steps_per_second': 4.718, 'train_loss': 0.23912451616276265, 'epoch': 7.0}
