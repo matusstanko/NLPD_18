@@ -24,7 +24,7 @@ CFG = dict(
     epochs      = 7,
     batch_size  = 16,
     lr          = 3e-5,
-    data_dir    = "/home/matus/NLPD_18/part1/outputs"   
+    data_dir    = "/home/matus/NLPD_18/data"   
 )
 
 # Loading data
@@ -123,7 +123,7 @@ val_f1s = (
 n_iter = len(train_losses)
 
 # Training, validation F1 SCORE
-plt.style.use("default") =
+plt.style.use("default")
 plt.figure()
 plt.plot(range(1, n_iter + 1), train_losses, marker="o", color="tab:blue", label="Train Loss")
 plt.plot(range(1, n_iter + 1), val_f1s, marker="s", linestyle="--", color="tab:orange", label="Val F1")
@@ -178,3 +178,18 @@ pd.DataFrame([{
     "precision": eval_test["eval_precision"],
     "recall"   : eval_test["eval_recall"]
 }]).to_csv("results_summary_noXML.csv", index=False)
+
+
+# Get raw predictions
+preds_raw = trainer.predict(ds_test).predictions
+
+# Softmax on probs
+probs_class1 = torch.nn.functional.softmax(torch.tensor(preds_raw), dim=1)[:, 1].numpy()
+preds_class = preds_raw.argmax(-1)
+
+# save
+df_test_with_preds = df_test.copy()
+df_test_with_preds["prediction"] = preds_class
+df_test_with_preds["confidence"] = probs_class1
+df_test_with_preds.to_csv("output_test_with_preds.csv", index=False)
+

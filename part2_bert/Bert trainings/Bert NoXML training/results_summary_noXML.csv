@@ -1,2 +1,0 @@
-name,epochs,batch_size,lr,data_dir,accuracy,f1,precision,recall
-bert_noXML,7,16,3e-05,/home/matus/NLPD_18/part1/outputs,0.686411149825784,0.6311475409836066,0.6292134831460674,0.6330935251798561
