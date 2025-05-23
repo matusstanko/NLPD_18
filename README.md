@@ -1,20 +1,18 @@
----
-
 ## 🧪 Methods Summary
 
-- **NER Models**: RoBERTa and SpaCy
-- **Classification Models**: Logistic Regression, SVM, KNN, Decision Tree
-- **Tagging Comparison**: With and without XML-tagged entity markup
-- **Evaluation**: Accuracy, F1, Precision, Recall
+- **NER Models**: RoBERTa and SpaCy  
+- **Classification Models**: Logistic Regression, SVM, KNN, Decision Tree  
+- **Tagging Comparison**: With and without XML-tagged entity markup  
+- **Evaluation**: Accuracy, F1, Precision, Recall  
 
 ---
 
 ## 📈 Results Highlights
 
-- **SpaCy’s richer label set** improved entity count-based classifiers over RoBERTa.
-- **RoBERTa** showed strong contextual NER but coarser tags like `MISC`.
-- **XML-tagging** did **not improve performance**, and slightly reduced F1 scores.
-- **BERT without XML** tags performed best overall.
+- **SpaCy’s richer label set** improved entity count-based classifiers over RoBERTa  
+- **RoBERTa** showed strong contextual NER but coarser tags like `MISC`  
+- **XML-tagging** did **not improve performance**, and slightly reduced F1 scores  
+- **BERT without XML** tags performed best overall  
 
 ---
 
@@ -29,7 +27,7 @@ A collection of short political statements labeled by a 6-point truthfulness sca
 
 - **Matus Stanko** – RoBERTa NER pipeline, BERT training, HPC usage  
 - **Lucie Navratilova** – SpaCy training, feature extraction, data visualization  
-- **David Poda** – Error analysis, dataset inspection, XML-based evaluation
+- **David Poda** – Error analysis, dataset inspection, XML-based evaluation  
 
 ---
 
@@ -43,5 +41,3 @@ AI assistance was also used for debugging and learning library syntax, but all m
 ## 📄 License
 
 For educational purposes only. Please contact us before reusing or distributing.
-
----
